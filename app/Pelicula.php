@@ -10,7 +10,8 @@ class Pelicula extends Model
     protected $primaryKey="idPelicula";
     protected $table="peliculas";
     public $timestamps=true;
-
+    public $guarded=[];
+    protected $hidden=['pivot'];
     //CONST created_at='fecha_registro';
     //CONST updated_at='fecha_modificacion';
     
@@ -33,5 +34,25 @@ class Pelicula extends Model
     }
 
     
+    public static function findGenero($array, $idGenero)
+    {
+        foreach ($array as $item) {
+            foreach ($item as $value) {
+                if ($value == $idGenero) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($pelicula) { // before delete() method call this
+            $pelicula->generos()->detach();
+        });
+    }
 
 }

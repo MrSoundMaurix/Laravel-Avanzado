@@ -12,6 +12,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script type="text/javascript" src="{{asset('js/jquery-3.3.1.min.js')}}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -19,6 +20,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
 </head>
 <body>
     <div id="app">
@@ -33,8 +37,17 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-
+                    <ul class="nav nav-tabs mr-auto">
+                        @auth 
+                        <li class="nav-item">
+                            <a class="nav-link {{strpos(Request::path(), 'peliculas') !== false ? 'active' : ''}}"
+                             href="{{ url('peliculas') }}">Películas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{strpos(Request::path(), 'generos') !== false ?'active':''}}"
+                             href="{{ url('generos') }}">Géneros</a>
+                        </li>
+                        @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -75,5 +88,6 @@
             @yield('content')
         </main>
     </div>
+    @stack("scripts")
 </body>
 </html>

@@ -18,3 +18,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::group(["middleware"=>"auth"], function () {
+    Route::resource("peliculas","PeliculaController");
+    Route::resource("generos","GeneroController");
+    Route::post("generos/{id}/restore","GeneroController@restore")->name("generos.restore");
+    Route::post("generos/{id}/trash","GeneroController@trash")->name("generos.trash");
+
+
+});
