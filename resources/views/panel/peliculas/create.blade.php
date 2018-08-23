@@ -9,7 +9,7 @@
                     </a></div>
                     <div class="card-body">
                         @include('includes.messages')
-                        {!! Form::open(['url' => 'peliculas']) !!}
+                        {!! Form::open(['url' => 'peliculas','files'=>'true']) !!}
                             <div class="form-group row">
                                 <label for="titulo" class="col-sm-2 col-form-label">Título</label>
                                 <div class="col-sm-10">
@@ -24,6 +24,12 @@
                                 <label for="anio" class="col-sm-2 col-form-label">Años</label>
                                 <div class="col-sm-4">
                                     <input required type="number" min="1950" max="{{date('Y')}}" class="form-control" id="anio" name="anio" value="{{old('anio')}}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="imagen" class="col-sm-2 col-form-label">Imagen</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" id="imagen" name="imagen">
                                 </div>
                             </div>
                             <div class="form-group">

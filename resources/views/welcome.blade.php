@@ -7,8 +7,20 @@
 
         <title>Laravel</title>
 
+        <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+        <script>
+          var OneSignal = window.OneSignal || [];
+          OneSignal.push(function() {
+            OneSignal.init({
+              appId: "6f657656-3b59-4f93-97cb-ced03a68eb40",
+            });
+          });
+        </script>
+
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+
+
 
         <!-- Styles -->
         <style>
@@ -69,7 +81,7 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                    <a href="{{ url('/home') }}">@lang("messages.home")</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register') }}">Register</a>

@@ -29,7 +29,9 @@ class PeliculaRequest extends FormRequest
             'titulo'=>'required|string|max:30',
             'duracion'=>'required|integer|min:50|max:500',
             'anio'=>'required|integer|min:1970|max:'.$maxAnio,
+            'imagen'=>'nullable|file|mimes:jpeg,png,jpg,JPG|dimensions:min_width=400,min_height=400,max_width=2000,max_height=2000|max:2048',
             'idGenero' => 'nullable|array'
         ];
+
     }
 }

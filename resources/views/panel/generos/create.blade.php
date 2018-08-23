@@ -9,14 +9,21 @@
                     </a></div>
                     <div class="card-body">
                         @include('includes.messages')
-                        {!! Form::open(['url' => 'generos']) !!}
+               
+                        {!! Form::open(['url' => 'generos','files'=>'true']) !!}
+
                             <div class="form-group row">
                                 <label for="titulo" class="col-sm-2 col-form-label">Nombre</label>
                                 <div class="col-sm-10">
                                     <input required type="text" class="form-control" id="nombre" name="nombre" value="{{old('nombre')}}">
                                 </div>
                             </div>
-                           
+                            <div class="form-group row">
+                                <label for="imagen" class="col-sm-2 col-form-label">Imagen</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" id="imagen" name="imagen">
+                                </div>
+                            </div>
                            
                             <div class="form-group row">
                                     <div class="col-sm-10">

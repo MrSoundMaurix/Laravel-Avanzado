@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
  use App\Pelicula;
  use App\Genero;
  use App\Http\Requests\PeliculaRequest;
+ use App\Notifications\PeliculaNotification;
+ use Illuminate\Bus\Queueable;
+ use App\Jobs\ProcessEmail;
+ use Notification;
+use Auth;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class PeliculaController extends Controller
 {
@@ -28,6 +34,7 @@ class PeliculaController extends Controller
      */
     public function create()
     {
+        ProcessEmail::dispatch();
           $generos=Genero::orderBy('nombre')->get(['idGenero','nombre']);
         return view("panel.peliculas.create",compact('generos'));
     
@@ -41,13 +48,21 @@ class PeliculaController extends Controller
      */
     public function store(PeliculaRequest $request)
     {
+
         try{
-            $pelicula=Pelicula::create($request->except('idGenero'));
+            $pelicula=Pelicula::create($request->except(['idGenero']));
+            if ($request->imagen!=null && $request->hasFile('imagen')) {
+                $pelicula->imagen = $request->file('imagen')->store('public/peliculas');
+                $pelicula->save();
+           }
             $pelicula->generos()->sync($request->idGenero);
+            $pelicula->generos()->sync($request->idActor);
             return redirect('peliculas')->with('success','Película registrada');
         }catch(Exception $e){
             return back()->withErrors(['exception'=>$e->getMessage()])->withInput();
         }
+
+      
     }
 
     /**

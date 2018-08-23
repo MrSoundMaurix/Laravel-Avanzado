@@ -2,36 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Genero;
+use Illuminate\Http\Request;
+use Illuminate\Bus\Queueable;
+use Illuminate\Database\QueryException;
 use App\Http\Requests\GeneroRequest;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\View;
-class GeneroController extends Controller
+use App\Notifications\GeneroNotification;
+use Notification;
+use Auth;
+use Lang;
+use App\Jobs\ProcessEmail;
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+
+
+class GeneroController extends Controller implements ShouldQueue
 {
+    use Queueable;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
 
-        $generos = Genero::orderBy('nombre')->paginate(10);
+
+    public function index(Request $request)
+    {
+        $query=Genero::query();
+        $query=$query->withCount('peliculas')->orderBy('nombre');  
+        if($request->display == "all"){
+            $query =$query->withTrashed();
+        }else if($request->display == "trash"){
+            $query =$query->onlyTrashed();
+        }
+        $generos = $query->paginate(10);
         return view('panel.generos.index', compact('generos'));
-        
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $generos=Genero::orderBy('nombre')->get(['idGenero','nombre']);
-        return view("panel.generos.create",compact('generos'));
-    
     }
 
     /**
@@ -42,20 +47,27 @@ class GeneroController extends Controller
      */
     public function store(GeneroRequest $request)
     {
-          Genero::create($request->all());
-        return Redirect::to('generos')->with('success','Género Creado con éxito');
-/*
         try{
-            $genero=Genero::create($request->except('idGenero'));  ///duda
-            $pelicula->generos()->sync($request->idGenero);
-            return redirect('peliculas')->with('success','Película registrada');
+            $genero=Genero::create($request->except(['imagen']));
+            if ($request->imagen!=null && $request->hasFile('imagen')) {
+                $genero->imagen = $request->file('imagen')->store('public/generos');
+                $genero->save();
+            }
+         
+            return redirect('generos')->with('success','Genero Registrado');
         }catch(Exception $e){
             return back()->withErrors(['exception'=>$e->getMessage()])->withInput();
         }
-*/
-
     }
 
+    public function create()
+    {
+         // $generos=Genero::orderBy('nombre')->get(['idGenero','nombre']);
+         ProcessEmail::dispatch();
+        return view("panel.generos.create");
+    
+    }
+    
     /**
      * Display the specified resource.
      *
@@ -64,21 +76,13 @@ class GeneroController extends Controller
      */
     public function show($id)
     {
-         $genero=Genero::findOrFail($id);
-     return view("panel.generos.show",compact('genero'));
+        // $gen=Genero::select("idproducto","nombreproducto","stockproducto",
+        // "precioproducto","codigoproducto")->findOrFail($id);
+        // return response()->json($prod);
 
-    }
+        //web service tipo rest 
+        return  Genero::withTrashed()->where('idGenero',$id)->firstOrFail()->toJson();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $genero=Genero::findOrFail($id);
-        return view('panel.generos.edit',compact('genero'));
     }
 
     /**
@@ -88,12 +92,9 @@ class GeneroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(GeneroRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        
-        Genero::updateOrCreate(['idGenero'=>$id],$request->all());
-        return Redirect::to('generos')->with('success','Género Actualizado con éxito');
-
+        //
     }
 
     /**
@@ -104,8 +105,45 @@ class GeneroController extends Controller
      */
     public function destroy($id)
     {
-        Genero::destroy($id);
-        return Redirect::to('generos')->with('success','Género Eliminado correctamente');
- 
+        try{
+            Genero::withTrashed()->where('idGenero',$id)->forceDelete();
+            return redirect('generos')->with('success','Género eliminado permanentemente');
+        }catch(Exception | QueryException $e){
+            return back()->withErrors(['exception'=>$e->getMessage()]);
+        }
     }
+
+    public function restore($id)
+    {
+        try{
+            $gen=Genero::withTrashed()->where('idGenero',$id)->restore();
+            info($gen);
+            return redirect('generos')->with('success','Género restaurado');
+        }catch(Exception $e){
+            return back()->withErrors(['exception'=>$e->getMessage()]);
+        }
+    }
+
+    public function trash($id)
+    {
+        try {
+            Genero::destroy($id);
+            ProcessEmail::dispatch();
+            $gen=Genero::withTrashed()->where('idGenero',$id)->first();
+            // $gen = Genero::withTrashed()->where('idGenero', $id)->first();
+            // $user = Auth::user();
+            // $user->notify(new GeneroNotification($gen));
+
+
+            //Mail::to($user)->send(new GeneroTrash());
+            // Notification::route('mail', $email)
+            // ->notify(new GeneroNotification());
+            return redirect('generos')->with('success', Lang::get("messages.gender_trash",['name'=>$gen->nombre]));
+           // return redirect('generos')->with('success', 'Género enviado a papelera');
+        } catch (Exception $e) {
+            return back()->withErrors(['exception' => $e->getMessage()]);
+        }
+
+    }
+
 }

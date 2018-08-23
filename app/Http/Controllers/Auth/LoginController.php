@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\User;
+use GuzzleHttp\Exception\ClientException;
+use Auth;
+use Socialite;
 
 class LoginController extends Controller
 {
@@ -36,4 +40,35 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
+
+    // Metodo encargado de obtener la información del usuario
+    public function handleProviderCallback($provider)
+    {
+        try {
+            // Obtenemos los datos del usuario
+            $social_user = Socialite::driver($provider)->user();
+            // Comprobamos si el usuario ya existe
+            $user = User::where('email', $social_user->email)->firstOrFail();
+            if ($user) {
+                return $this->authAndRedirect($user); // Login y redirección
+            }
+        } catch (Exception | ClientException $e) {
+            return redirect()->to('/login')->withErrors(['email' => "No existe el email en nuestra base de datos"]);
+        }
+
+    }
+
+    // Login y redirección
+    public function authAndRedirect($user)
+    {
+        Auth::login($user);
+
+        return redirect()->to('/home');
+    }
+
 }

@@ -24,7 +24,8 @@ class GeneroRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nombre'=>'required|string|max:30',
+            'imagen'=>'nullable|file|mimes:jpeg,png,jpg,JPG|dimensions:min_width=400,min_height=400,max_width=2000,max_height=2000|max:2048'
         ];
     }
 }

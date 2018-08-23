@@ -4,13 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Storage;
+use Illuminate\Support\Facades\Auth;
+use Input;
+use App\Notifications\PeliculaNotification;
 
 class Pelicula extends Model
 {
     protected $primaryKey="idPelicula";
     protected $table="peliculas";
     public $timestamps=true;
-    public $guarded=[];
+    public $fillable = ['titulo','duracion','anio','imagen'];
     protected $hidden=['pivot'];
     //CONST created_at='fecha_registro';
     //CONST updated_at='fecha_modificacion';
@@ -33,7 +37,12 @@ class Pelicula extends Model
         return $this->belongsToMany('\App\Genero','peliculas_generos','idPelicula','idGenero');
     }
 
-    
+
+
+
+
+
+
     public static function findGenero($array, $idGenero)
     {
         foreach ($array as $item) {
@@ -50,9 +59,31 @@ class Pelicula extends Model
     {
         parent::boot();
 
-        static::deleting(function ($pelicula) { // before delete() method call this
-            $pelicula->generos()->detach();
+        static::deleted(function ($pelicula) { // before delete() method call this
+            $pelicula->peliculas()->detach();
+            if($pelicula->imagen != null){
+                Storage::delete($pelicula->imagen);
+                $user = Auth::user();
+                $user->notify(new PeliculaNotification($pelicula));
+
+            }
+
         });
+       
+        // static::deleted(function ($pelicula) {
+        //     $user = Auth::user();
+        //     $user->notify(new PeliculaNotification($pelicula));
+        // }); 
+        static::created(function ($pelicula) {
+            if (Input::hasFile('imagen') && $pelicula->imagen != null) {
+                $image = Input::file('imagen');
+                $pelicula->imagen = $image->store('public/peliculas');
+                $user = Auth::user();
+                $user->notify(new PeliculaNotification($peliculea,true,true));
+            }
+        });
+
     }
+
 
 }

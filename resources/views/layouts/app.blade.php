@@ -8,6 +8,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    
+
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
@@ -23,6 +25,18 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+
+    @stack("styles")
+
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    <script>
+      var OneSignal = window.OneSignal || [];
+      OneSignal.push(function() {
+        OneSignal.init({
+          appId: "6f657656-3b59-4f93-97cb-ced03a68eb40",
+        });
+      });
+    </script>
 </head>
 <body>
     <div id="app">
@@ -40,12 +54,16 @@
                     <ul class="nav nav-tabs mr-auto">
                         @auth 
                         <li class="nav-item">
+                            <a class="nav-link {{strpos(Request::path(), 'home') !== false ? 'active' : ''}}"
+                             href="{{ url('home') }}">@lang("messages.home")</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{strpos(Request::path(), 'peliculas') !== false ? 'active' : ''}}"
-                             href="{{ url('peliculas') }}">Películas</a>
+                             href="{{ url('peliculas') }}">@lang("messages.movies")</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{strpos(Request::path(), 'generos') !== false ?'active':''}}"
-                             href="{{ url('generos') }}">Géneros</a>
+                             href="{{ url('generos') }}">@lang("messages.genders")</a>
                         </li>
                         @endauth
                     </ul>
@@ -62,6 +80,18 @@
                             </li>
                         @else
                             <li class="nav-item dropdown">
+                                <a id="navbarDropdownLanguages" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    @lang("messages.languages")
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownLanguages">
+                                    @foreach (Config::get('app.available_locale') as $lang)
+                                        @if ($lang != \LaravelLocalization::getCurrentLocale())
+                                            <a class="dropdown-item" href="{{ route('lang.switch', $lang) }}">@lang("languages.$lang")</a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
@@ -70,7 +100,7 @@
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        @lang("messages.logout")
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -90,4 +120,5 @@
     </div>
     @stack("scripts")
 </body>
+
 </html>

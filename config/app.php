@@ -92,6 +92,12 @@ return [
     */
 
     'fallback_locale' => 'en',
+    'available_locale' => [
+        'en',
+        'es',
+        'it',
+    ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -146,6 +152,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Berkayk\OneSignal\OneSignalServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -174,7 +181,10 @@ return [
     */
 
     'aliases' => [
-
+        'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -208,7 +218,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];
