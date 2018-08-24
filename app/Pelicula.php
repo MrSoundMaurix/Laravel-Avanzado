@@ -14,12 +14,17 @@ class Pelicula extends Model
     protected $primaryKey="idPelicula";
     protected $table="peliculas";
     public $timestamps=true;
-    public $fillable = ['titulo','duracion','anio','imagen'];
+    public $fillable = ['titulo', 'duracion', 'anio', 'imagen', 'idUser']; 
     protected $hidden=['pivot'];
     //CONST created_at='fecha_registro';
     //CONST updated_at='fecha_modificacion';
     
+    public function usuario()
+    {
+        return $this->belongsTo('\App\User', 'idUser');
+    }
     
+
     public function scopeCortas($query){
     return $query->where('duracion','<','120');
 
