@@ -23,7 +23,7 @@ class Pelicula extends Model
     {
         return $this->belongsTo('\App\User', 'idUser');
     }
-    
+
 
     public function scopeCortas($query){
     return $query->where('duracion','<','120');
@@ -74,19 +74,34 @@ class Pelicula extends Model
             }
 
         });
-       
+        static::deleting(function ($pelicula) { // before delete() method call this
+            $pelicula->generos()->detach();
+            if ($pelicula->imagen != null) {
+                Storage::delete($pelicula->imagen);
+            }
+        });
+
+        static::creating(function ($pelicula) {
+            $pelicula->idUser = Auth::id();
+            if (Input::hasFile('imagen') && $pelicula->imagen != null) {
+                $image = Input::file('imagen');
+                $pelicula->imagen = $image->store('public/peliculas');
+            }
+        });
+
+
         // static::deleted(function ($pelicula) {
         //     $user = Auth::user();
         //     $user->notify(new PeliculaNotification($pelicula));
         // }); 
-        static::created(function ($pelicula) {
-            if (Input::hasFile('imagen') && $pelicula->imagen != null) {
-                $image = Input::file('imagen');
-                $pelicula->imagen = $image->store('public/peliculas');
-                $user = Auth::user();
-                $user->notify(new PeliculaNotification($peliculea,true,true));
-            }
-        });
+        // static::created(function ($pelicula) {
+        //     if (Input::hasFile('imagen') && $pelicula->imagen != null) {
+        //         $image = Input::file('imagen');
+        //         $pelicula->imagen = $image->store('public/peliculas');
+        //         $user = Auth::user();
+        //         $user->notify(new PeliculaNotification($peliculea,true,true));
+        //     }
+        // });
 
     }
 
