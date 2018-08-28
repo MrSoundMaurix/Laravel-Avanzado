@@ -21,7 +21,7 @@ class Pelicula extends Model
     
     public function usuario()
     {
-        return $this->belongsTo('\App\User', 'idUser');
+        return $this->belongsTo('\App\User', 'idUser')->withDefault(["name"=>"Anonimo"]);
     }
 
 

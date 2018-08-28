@@ -65,6 +65,14 @@
                             <a class="nav-link {{strpos(Request::path(), 'generos') !== false ?'active':''}}"
                              href="{{ url('generos') }}">@lang("messages.genders")</a>
                         </li>
+
+                       @role('admi')
+                        <li class="nav-item">
+                            <a class="nav-link {{strpos(Request::path(), 'usuarios') !== false ?'active':''}}"
+                             href="{{ url('usuarios') }}">@lang("messages.users")</a>
+                        </li>  
+                       @endrole
+
                         @endauth
                     </ul>
 
@@ -97,6 +105,12 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    
+                                        <a class="dropdown-item" href="{{ route('settings') }}">
+                                                @lang("messages.settings")
+                                            </a>
+       
+       
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
