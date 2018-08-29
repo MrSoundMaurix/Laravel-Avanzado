@@ -28,6 +28,7 @@ return [
     ],
     'boolean'              => "Lauko reikšmė :attribute turi būti 'taip' arba 'ne'.",
     'confirmed'            => 'Lauko :attribute patvirtinimas nesutampa.',
+    'current_password'     => 'La password inserita non corrisponde a quella corrente.',
     'date'                 => 'Lauko :attribute reikšmė nėra galiojanti data.',
     'date_format'          => 'Lauko :attribute reikšmė neatitinka formato :format.',
     'different'            => 'Laukų :attribute ir :other reikšmės turi skirtis.',
@@ -108,6 +109,7 @@ return [
     'timezone'             => 'Lauko :attribute reikšmė turi būti galiojanti laiko zona.',
     'unique'               => 'Tokia :attribute reikšmė jau pasirinkta.',
     'uploaded'             => 'The :attribute failed to upload.',
+    'strong_password'             => 'La password deve contenere almeno una lettera maiuscola, una minuscola, un numero e uno dei seguenti caratteri "!$%&?@#._-".',
     'url'                  => 'Negaliojantis lauko :attribute formatas.',
     /*
     |--------------------------------------------------------------------------

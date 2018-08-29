@@ -13,4 +13,5 @@ return [
     'gender_trash' => 'spazzatura ":name" di genere',
     'languages' => 'lingue',
     'settings' => 'configurazione',
+    'reports' => 'rapporti',
 ];

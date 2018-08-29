@@ -124,6 +124,14 @@ class GeneroController extends Controller implements ShouldQueue
         }
     }
 
+
+    public function findGender($idGenero){
+        $genero=Genero::firstOrFail(['nombre','updated_at']);
+        return $genero->toJson();
+
+    }
+
+
     public function trash($id)
     {
         try {

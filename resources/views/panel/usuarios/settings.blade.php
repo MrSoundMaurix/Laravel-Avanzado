@@ -27,7 +27,7 @@
                           
                               <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                 <div class="card-body">
-                                        {!! Form::open(['url' => 'change_password']) !!}
+                                        {!! Form::open(['url' => \LaravelLocalization::getCurrentLocale().'/change_password']) !!}
                                             <div class="form-group row">
                                                 <label for="password_now" class="col-sm-2 col-form-label">Contraseña actual</label>
                                                 <div class="col-sm-10">

@@ -130,6 +130,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        
         Zizaco\Entrust\EntrustServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -182,6 +183,7 @@ return [
     */
 
     'aliases' => [
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
         'Input' => Illuminate\Support\Facades\Input::class,
