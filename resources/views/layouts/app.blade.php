@@ -54,6 +54,113 @@
                     <ul class="nav nav-tabs mr-auto">
                         @auth 
                         <li class="nav-item">
+                            <a class="nav-link {{Route::currentRouteName() != 'home' ?: 'active'}}"
+                             href="{{ url('home') }}">@lang("messages.home")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{Route::currentRouteName() != 'peliculas.index' ?: 'active'}}"
+                             href="{{ url('peliculas') }}">@lang("messages.movies")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{Route::currentRouteName() != 'generos.index' ?: 'active'}}"
+                             href="{{ url('generos') }}">@lang("messages.genders")</a>
+                        </li>
+                        @role('admi')
+                            <li class="nav-item">
+                                <a class="nav-link {{Route::currentRouteName() != 'usuarios.index' ?: 'active'}}"
+                                href="{{ url('usuarios') }}">@lang("messages.users")</a>
+                            </li>
+                        @endrole
+                        <li class="nav-item">
+                            <a class="nav-link {{Route::currentRouteName() != 'reportes.index' ?: 'active'}}"
+                             href="{{ url('reportes') }}">@lang("messages.reports")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{Route::currentRouteName() != 'actores.index' ?: 'active'}}"
+                             href="{{ url('actores') }}">@lang("messages.actors")</a>
+                        </li>
+                        @role('admi')
+                            <li class="nav-item">
+                                <a class="nav-link {{Route::currentRouteName() != 'passport.index' ?: 'active'}}"
+                                href="{{ url('passport') }}">Passport</a>
+                            </li>
+                        @endrole
+                        @endauth
+                    </ul>
+
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Authentication Links -->
+                        @guest
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                            </li>
+                        @else
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdownLanguages" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    @lang("messages.languages")
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownLanguages">
+                                    @foreach (Config::get('app.available_locale') as $lang)
+                                        @if ($lang != \LaravelLocalization::getCurrentLocale())
+                                            <a class="dropdown-item" href="{{ route('lang.switch', $lang) }}">@lang("languages.".$lang)</a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('settings') }}">
+                                         @lang("messages.settings")
+                                     </a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        @lang("messages.logout")
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="py-4">
+            @yield('content')
+        </main>
+    </div>
+    @stack("scripts")
+</body>
+</html>
+
+{{-- <body>
+    <div id="app">
+        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Left Side Of Navbar -->
+                    <ul class="nav nav-tabs mr-auto">
+                        @auth 
+                        <li class="nav-item">
                             <a class="nav-link {{strpos(Request::path(), 'home') !== false ? 'active' : ''}}"
                              href="{{ url('home') }}">@lang("messages.home")</a>
                         </li>
@@ -73,7 +180,7 @@
                         </li>  
                        @endrole
                        <li class="nav-item">
-                        <a class="nav-link {{strpos(Request::path(), 'usuarios') !== false ?'active':''}}"
+                        <a class="nav-link {{strpos(Request::path(), 'reportes') !== false ?'active':''}}"
                          href="{{ url('reportes') }}">@lang("messages.reports")</a>
                         </li>  
 
@@ -155,6 +262,5 @@
         </main>
     </div>
     @stack("scripts")
-</body>
+</body> --}}
 
-</html>
