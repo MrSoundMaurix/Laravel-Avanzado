@@ -77,6 +77,23 @@
                          href="{{ url('reportes') }}">@lang("messages.reports")</a>
                         </li>  
 
+                         <li class="nav-item">
+                            <a class="nav-link {{Route::currentRouteName() != 'actores.index' ?: 'active'}}"
+                             href="{{ url('actores') }}">@lang("messages.actors")</a>
+                        </li>
+
+                        @role('admi')
+                       <li class="nav-item">
+                        <a class="nav-link {{Route::currentRouteName()!='passport.index'?:'active'}}"
+                         href="{{ url('passport') }}">Passport</a>
+                        </li> 
+                        @endrole 
+
+                        <li class="nav-item">
+                                <a class="nav-link {{Route::currentRouteName() != 'reportes.index' ?: 'active'}}"
+                                 href="{{ url('reportes') }}">@lang("messages.reports")</a>
+                            </li>
+    
 
                         @endauth
                     </ul>

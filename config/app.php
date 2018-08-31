@@ -155,6 +155,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Berkayk\OneSignal\OneSignalServiceProvider::class,
+        Czim\Service\ServiceServiceProvider::class,
 
         /*
          * Package Service Providers...

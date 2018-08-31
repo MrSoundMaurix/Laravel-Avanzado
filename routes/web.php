@@ -24,13 +24,20 @@ Route::group(["middleware" => ['localeSessionRedirect', 'localizationRedirect', 
     Route::group(["middleware" => "auth"], function () {
 
         
-        Route::get('reportes', 'ReporteController@index');
+        Route::get('reportes', 'ReporteController@index')->name('reportes.index');
+        Route::get('passport', 'PassportController@index')->middleware('role:admi')->name('passport.index'); //con esto validamos q solo el amdinisttrador pueda acceder a esa ruta
+        Route::get('actores', 'ServiceController@getActores');
         Route::resource("peliculas", "PeliculaController")->except(['store', 'update','destroy']);
         Route::resource("generos", "GeneroController")->except(['store', 'update','destroy']);
         Route::resource("usuarios", "UserController")->except(['store', 'update','destroy','create','edit'])
         ->middleware('role:admi');
         Route::get('settings', 'UserController@settings')->name('settings');
         Route::post('change_password', 'UserController@change_password')->name('settings.store');
+        
+        Route::get('actores', function () {
+            return view('panel.actores.index');
+        })->name('actores.index');
+
     });
 });
 Route::group(["middleware" => "auth"], function () {
@@ -46,7 +53,13 @@ Route::group(["middleware" => "auth"], function () {
     ///reportes
     Route::group(["prefix" => "reportes"], function () {
         Route::get("usuarios", "ReporteController@reporteUsuarios")->name('reportes.usuarios');
-  
+        Route::get("generos", "ReporteController@reporteGeneros")->name('reportes.generos');
+        Route::get("usuarios/excel", "ReporteController@reporteUsuariosExcel")->name('reportes.usuarios.excel');
+        Route::get("generos/excel", "ReporteController@reporteGenerosExcel")->name('reportes.generos.excel');
+        Route::get("peliculas/excel", "ReporteController@reportePeliculasExcel")->name('reportes.peliculas.excel');
+        Route::get("peliculas/excel", "ReporteController@reportePeliculasTittleExcel")->name('reportes.peliculas.excel');
+        
+        
     });
 
 });

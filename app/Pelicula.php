@@ -59,6 +59,10 @@ class Pelicula extends Model
         }
         return false;
     }
+    public function actores()
+    {
+        return $this->belongsToMany('\App\Actor', 'peliculas_actores', 'idPelicula', 'idActor');
+    }
 
     protected static function boot()
     {

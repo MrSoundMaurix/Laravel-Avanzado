@@ -5,13 +5,14 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
+use Laravel\Passport\HasApiTokens;
 use Faker;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use EntrustUserTrait;
-
+    use HasApiTokens;
     /**
      * The attributes that are mass assignable.
      *
@@ -44,13 +45,6 @@ class User extends Authenticatable
     protected static function boot()
     { 
         parent::boot();
-        static::creating(function ($usuario) {
-          $faker=Faker\Factory::create();
-            $password=$faker->password();
-            info($password);
-            $usuario->password=bcrypt($password);
-
-        });
     }
 
 

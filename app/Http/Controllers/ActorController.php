@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actor;
+use App\Http\Request\ActorRequest;
 use Illuminate\Http\Request;
 
 class ActorController extends Controller
@@ -12,10 +13,19 @@ class ActorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
     public function index()
     {
-        //
+        $actores = Actor::withCount('peliculas')->orderBy('apellidos')->get();
+        return $actores->toJson();
     }
+
+    public function store(ActorRequest $request)
+    {
+        return Actor::create($request->all());
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -33,10 +43,7 @@ class ActorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
-    }
+   
 
     /**
      * Display the specified resource.

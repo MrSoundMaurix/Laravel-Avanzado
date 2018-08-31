@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use GuzzleHttp\Exception\ClientException;
 use Auth;
+use Illuminate\Http\Request;
 use Socialite;
 
 class LoginController extends Controller
@@ -30,7 +31,8 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '/home';
-    protected $maxAttempts = 3;
+    protected $maxAttempts = 3;  //maximo de intentos q tiene el usuario de loguearse
+
 
     /**
      * Create a new controller instance.
@@ -71,5 +73,30 @@ class LoginController extends Controller
 
         return redirect()->to('/home');
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect('login');
+    }
+
+    protected function credentials(Request $request)
+    {
+        $login = $request->input($this->username());
+
+        // Comprobar si el input coincide con el formato de E-mail
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        return [
+            $field => $login,
+            'password' => $request->input('password'),
+        ];
+    }
+
+    public function username()
+    {
+        return 'username';
+    }
+
 
 }
